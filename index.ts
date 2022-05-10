@@ -19,6 +19,11 @@ export function writable<T>(key: string, initialValue: T): Writable<T> {
     const store = internal(initialValue, (set) => {
       const json = browser ? localStorage.getItem(key) : null
 
+      // Preserve existing storage if exists
+      if (browser) {
+        json ? localStorage.setItem(key, json) : localStorage.setItem(key, JSON.stringify(initialValue))
+      }
+
       if (json) {
         set(<T> JSON.parse(json))
       }
